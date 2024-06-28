@@ -1,18 +1,21 @@
-// Imports and definitions
-import { Client, IntentsBitField } from 'discord.js'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-import { readdirSync } from 'fs'
-import { botToken } from './config.js'
+/**
+ * Main file for oreo bot
+ */
 
-const filename = fileURLToPath(import.meta.url);
+import {Client, IntentsBitField, Collection} from 'discord.js'
+import { readdirSync } from 'fs'
+import * as config from './config.js'
+
+const eventFiles = readdirSync('./src/events').filter(file => file.endsWith('.js'))
+const handlers = readdirSync("./src/handlers").filter(file => file.endsWith(".js"))
+const commandFolders = readdirSync("./src/commands")
 
 //-------------------------------------------------
-// Bot Client Initialization
+// Bot client initialization and setup
 // ------------------------------------------------
 
 console.log('----------------------------------')
-console.log('🔵 Initiating Oreobot...')
+console.log('🔵 Initiating Oreo...')
 
 // Create a new Discord client instance with parameters
 const client = new Client({
@@ -24,41 +27,38 @@ const client = new Client({
     ]
 })
 
-// Bot login login
-client.login(botToken).then(() => {
-    console.log(`✅ ${client.user.tag} Login successful.`);
-}).catch(error => {
-    console.error('❌ Login failed:', error);
-})
+// Once the bot is ready, set up the bot
+client.once('ready', async () => {
+    try {
+        client.commands = new Collection()
 
-// Once the bot is ready, register event listeners and log in
-client.once('ready', () => {
-    loadEventHandlers()
-        .then(() => {
-            console.log('✅ All event handlers loaded.')
-        })
-        .catch(error => {
-            console.error('❌ Failed to load event handlers:', error);
-        })
-})
-
-// ------------------------------------------------
-// Helper functions
-// ------------------------------------------------
-
-// Function to load event handlers dynamically
-const loadEventHandlers = async () => {
-    const eventsDir = join(dirname(filename), 'events');
-    const eventFiles = readdirSync(eventsDir).filter(file => file.endsWith('.js'));
-
-    console.log('🔵 Loading event handlers...')
-    for (const file of eventFiles) {
-        const eventHandler = await import(`file://${join(eventsDir, file)}`);
-        if (typeof eventHandler.default === 'function') {
-            eventHandler.default(client);
-            console.log(`\t✅ Loaded event handler from ${file}`);
-        } else {
-            console.warn(`\t⚠️ No default export function found in ${file}. Skipping.`);
+        // Read in and set up handlers. Handler functions are attached to client.
+        for (let file of handlers) {
+            const handler = await import(`./handlers/${file}`)
+            handler.default(client)
         }
+        client.handleCommands(commandFolders, './src/commands')
+        client.handleEvents(eventFiles)
+
+        // Set bot presence
+        client.user.setPresence({
+            activities: [{
+                name: 'with your feelings 💘',
+            }],
+            status: 'idle',
+        })
+    } catch (error) {
+        console.error('❌ An error occurred during setup:\n', error)
+        process.exit(1)
+    } finally {
+        console.log('✅ Bot setup with no errors.')
     }
-}
+})
+
+// Bot login
+client.login(config.botToken).then(() => {
+    console.log(`✅ ${client.user.tag} Logged in.`)
+}).catch(error => {
+    console.error('❌ Login failed:\n', error)
+    process.exit(1)
+})

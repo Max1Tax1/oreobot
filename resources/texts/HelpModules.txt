@@ -1,0 +1,15 @@
+Type `-help [module]` to find out more about the command module.
+
+--------------------------------
+`generic`
+Generic commands
+
+`music`
+Commands to do with the playing/searching for music
+
+`game`
+Mini games, game related or game tool commands
+
+`valorant`
+valorant related commands
+--------------------------------

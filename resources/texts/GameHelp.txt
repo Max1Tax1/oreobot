@@ -1,0 +1,28 @@
+Mini-games, game related commands
+
+--------------------------------
+`-8ball [question]`
+Ask a question for the 8-ball to answer.
+
+`-dice (optional number)`
+Rolls a 6-sided die, or a n-sided die of your choice.
+
+`-coin`
+Flips a coin.
+
+`-choose [item A; item B; ...]`
+Chooses an item out of the list of items given
+Separate each item with a semicolon `;`
+
+`-acro (optional args)` OR `-acrophobia (optional args)`
+Starts a game of acrophobia!
+Optional arguments (can include one or multiple):
+`.l [length]`: Set the length of the acronym
+`.s [time]`: Set the number of seconds for submission phase
+`.v [time]`: Set the number of seconds for voting phase
+Default 60 seconds for each phase, random acronym length of 4-6
+
+`-rps`
+:warning:UNDER CONSTRUCTION:warning:
+Play rock paper Scissors.
+--------------------------------

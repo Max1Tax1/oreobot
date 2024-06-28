@@ -1,6 +1,11 @@
-// Event listener for warnings
-export default (client) => {
-    client.on('warn', warning => {
-        console.warn('🟡 Warning:', warning);
-    })
+/**
+ * Event listener for warnings
+ */
+
+export default {
+    name: 'error',
+    once: false,
+    execute(warning) {
+        console.error('🟡 Warning:\n', warning)
+    },
 }

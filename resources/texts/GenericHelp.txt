@@ -1,0 +1,18 @@
+Generic commands
+
+--------------------------------
+`-help`
+Displays the first page of help
+
+`-help [module]`
+Jumps to specific command module page
+
+`-modules`
+Displays all command modules
+
+`-join`
+Joins the voice channel you are in
+
+`-leave`
+Leaves the current voice channel
+--------------------------------

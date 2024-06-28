@@ -1,0 +1,17 @@
+Valorant related commands
+
+--------------------------------
+`-valorant featured (option)`
+Shows the featured bundle with statistics
+no options: Shows the bundle description
+`list`: Lists the bundle contents + price
+`skins`: Shows skins in the bundles
+`buddies`: Shows gun buddies in the bundles
+`cards`: Shows player cards in the bundles
+`sprays`: Shows sprays in the bundles
+
+
+`-valorant stats [riotID#hastag]`
+:warning:UNDER CONSTRUCTION:warning:
+Shows a player's statistics
+--------------------------------

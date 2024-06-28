@@ -1,0 +1,25 @@
+Commands related to using the music player & queue
+
+--------------------------------
+`-play`
+Kanna joins channel to play songs in the music queue
+Plays song if paused
+
+`-pause`
+Pauses the current playing song
+
+`-cp`
+Displays the currently playing track
+
+`-loop`
+Turn on/off looping mode
+
+`-queue`
+Shows information about the music queue
+
+`-remove (optional number)` OR `-remove next`
+Remove a song from the queue, "next" removes the next song
+
+`-purge`
+Stops music player and clears the queue (with a mighty beam)
+--------------------------------
