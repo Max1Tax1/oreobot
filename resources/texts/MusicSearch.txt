@@ -1,0 +1,20 @@
+Commands related to searching and adding music
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`-play [song name]`
+Plays the song specified
+Adds it to the queue if one is already playing
+Kanna joins channel if not in channel
+
+`-add [song name]`
+Adds a song to the queue
+
+`-addurl [URL]`
+Adds from the URL (may not work for sites other than youtube!)
+
+`-search [song name]`
+Searches for the song name
+Enter a number to select from the results
+
+`-addprev`
+Adds the previous track to queue
+━━━━━━━━━━━━━━━━━━━━━━━━━━━

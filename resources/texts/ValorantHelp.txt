@@ -1,6 +1,5 @@
 Valorant related commands
-
---------------------------------
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `-valorant featured (option)`
 Shows the featured bundle with statistics
 no options: Shows the bundle description
@@ -14,4 +13,4 @@ no options: Shows the bundle description
 `-valorant stats [riotID#hastag]`
 :warning:UNDER CONSTRUCTION:warning:
 Shows a player's statistics
---------------------------------
+━━━━━━━━━━━━━━━━━━━━━━━━━━━

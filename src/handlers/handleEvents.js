@@ -3,7 +3,7 @@
  */
 
 export default function handleEvents(client) {
-    client.handleEvents = async (eventFiles) => {
+    client.loadEvents = async (eventFiles) => {
         try {
             for (let file of eventFiles) {
                 const { default: event } = await import(`../events/${file}`)

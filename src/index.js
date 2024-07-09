@@ -31,22 +31,22 @@ const client = new Client({
 client.once('ready', async () => {
     try {
         client.commands = new Collection()
+        client.commandModules = new Map()
 
         // Read in and set up handlers. Handler functions are attached to client.
         for (let file of handlers) {
             const handler = await import(`./handlers/${file}`)
             handler.default(client)
         }
-        client.handleCommands(commandFolders, './src/commands')
-        client.handleEvents(eventFiles)
+        client.loadCommands(commandFolders, './src/commands')
+        client.loadEvents(eventFiles)
 
         // Set bot presence
         client.user.setPresence({
-            activities: [{
-                name: 'with your feelings 💘',
-            }],
-            status: 'idle',
+            activities: [{ name: 'with your feelings 💘' }],
+            status: 'idle'
         })
+        
     } catch (error) {
         console.error('❌ An error occurred during setup:\n', error)
         process.exit(1)

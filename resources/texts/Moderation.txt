@@ -1,0 +1,1 @@
+These commands are only accessible to admins

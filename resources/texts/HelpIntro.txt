@@ -1,9 +1,0 @@
-Kanna at your service!
-
-Interact with Kanna by calling her name and telling her something
-Currently, Kanna can greet you, say goodbye and find things to eat
-
-E.g.
-User: Hello Kanna
-Kanna: Hai! UwU
-Alternatively, command Kanna to do something with "-"!
