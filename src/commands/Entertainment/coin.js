@@ -3,7 +3,7 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getRandomItem, defaultEmbed } from '../../utils.js'
+import { getRandomItem, defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -31,7 +31,7 @@ export async function execute(interaction, client) {
     await interaction.deferReply()
 
     // Create embed message
-    const resultEmbed = defaultEmbed(interaction, 'Coin Flip')
+    const resultEmbed = defaultEmbed(client, interaction.user, 'Coin Flip')
     resultEmbed.addFields({
             name: ':coin: Result:',
             value: getRandomItem(responses) + "`" + result + "` " + "!",

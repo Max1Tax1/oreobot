@@ -2,7 +2,7 @@
  * Command to ping oreo
  */
 
-import { SlashCommandBuilder } from "discord.js"
+import { SlashCommandBuilder } from 'discord.js'
 
 export const properties = {
     enabled: true,

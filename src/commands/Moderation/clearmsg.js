@@ -2,8 +2,8 @@
  * Command to delete messages in a channel
  */
 
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js"
-import { defaultEmbed } from "../../utils.js"
+import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js'
+import { defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -18,13 +18,11 @@ export const data = new SlashCommandBuilder()
 			.setDescription('Amount of messages to delete.')
             .setRequired(true)
             .setMinValue(1)
-            .setMaxValue(100)
-    )
+            .setMaxValue(100))
     .addBooleanOption(option => 
         option.setName('announce')
 			.setDescription('Whether or not to announce this change in channel (default False)')
-            .setRequired(false)
-    )
+            .setRequired(false))
 
 export async function execute(interaction, client) {
     let amount = interaction.options.get('amount').value
@@ -52,7 +50,7 @@ export async function execute(interaction, client) {
                 
             // Post delete request and respond to user (+ 1 to delete deferReply()'s "Oreo is thinking")
             await interaction.channel.bulkDelete(amount + 1, false)
-            const responseEmbed = defaultEmbed(interaction, `Deleted ${amount} messages from this channel!`)
+            const responseEmbed = defaultEmbed(client, interaction.user, `Deleted ${amount} messages from this channel!`)
             responseEmbed.setDescription(`This message will be deleted in ${timeout/1000} seconds.`)
             await interaction.channel.send({
                 embeds: [responseEmbed],

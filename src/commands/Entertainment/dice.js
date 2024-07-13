@@ -2,9 +2,8 @@
  * Command for Oreo to roll a dice and send the results in an embed message
  */
 
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js'
-import { getRandomItem, randInt } from '../../utils.js'
-import { defaultEmbed } from '../../utils.js'
+import { SlashCommandBuilder } from 'discord.js'
+import { getRandomItem, randInt } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -17,8 +16,7 @@ export const data = new SlashCommandBuilder()
 		option.setName('faces')
 			.setDescription('How many faces the die will have (default 6)')
             .setRequired(false)
-            .setMinValue(1)
-        )
+            .setMinValue(1))
 
 export async function execute(interaction, client) {
     const botAvatar = client.user.avatarURL({ dynamic: true })
@@ -40,7 +38,7 @@ export async function execute(interaction, client) {
     await interaction.deferReply()
 
     // Create embed message
-    const resultEmbed = defaultEmbed(interaction, diceFaces + '-Sided Dice Toss')
+    const resultEmbed = defaultEmbed(client, interaction.user, diceFaces + '-Sided Dice Toss')
     
     // Send ball embed if 1 dice face
     if (diceFaces == 1) {

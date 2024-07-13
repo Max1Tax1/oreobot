@@ -1,7 +1,29 @@
-/**
- * Config file for discord bot
- */
 
-export const botToken = 'MTI1Mjg2MDY3MTA3MTA5Mjc0Ng.G3K5Gi.kNz6cTVwDlcBedjOa6ygyuaJjtsXcd1bi0-D7c'
-export const botID = '1252860671071092746'
-export const guildID = '1252869262738067477'
+/**
+ * Config file for Oreo
+ */
+import ffmpegPath from 'ffmpeg-static'
+
+export const embedColour = 'F9F6EE'
+export const embedSeparator = '━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+export const mongodbURL = 'mongodb+srv://shiva:shiva@musicbotyt.ouljywv.mongodb.net/?retryWrites=true&w=majority'
+export const language = 'en'
+
+export const playlistSettings = {
+    maxPlaylist: 10,
+    maxTrackPerList: 75,
+}
+
+export const musicPlayer = {
+    silentMode: false,
+    DJ: {
+        commands: ['back', 'clear', 'filter', 'loop', 'pause', 'resume', 'skip', 'stop', 'volume', 'shuffle'],
+    },
+    distubeOptions: {
+        emitNewSongOnly: true,
+        emitAddSongWhenCreatingQueue: false,
+        emitAddListWhenCreatingQueue: false,
+        ffmpeg: { path: ffmpegPath }
+    },
+    maxVol: 150,
+}

@@ -1,1 +1,2 @@
-src/config.js
+src/secrets.js
+src/mongoDB.js

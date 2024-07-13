@@ -2,8 +2,8 @@
  * Command to disable a command
  */
 
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js"
-import { defaultEmbed } from "../../utils.js"
+import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js'
+import { defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -17,13 +17,12 @@ export const data = new SlashCommandBuilder()
     .addStringOption(option =>
 		option.setName('command')
 			.setDescription('Specify the command to disable')
-            .setRequired(true)
-        )
+            .setRequired(true))
     .addBooleanOption(option =>
         option.setName('enabled')
             .setDescription('Turn this command on/off')
-            .setRequired(true)
-    )
+            .setRequired(true))
+        
 
 export async function execute(interaction, client) {
     const selectedCommand = interaction.options.get('command').value
@@ -57,7 +56,7 @@ export async function execute(interaction, client) {
             // Disable command
             command.properties.enabled = isEnabled
             replied = true
-            const responseEmbed = defaultEmbed(interaction, `Command ${isEnabled ? "enabled" : "disabled"}`)
+            const responseEmbed = defaultEmbed(client, interaction.user, `Command ${isEnabled ? "enabled" : "disabled"}`)
             responseEmbed.setDescription(`Command \`/${selectedCommand}\` has been ${isEnabled ? "enabled" : "disabled"}!`)
             await interaction.reply({
                 embeds: [responseEmbed] 

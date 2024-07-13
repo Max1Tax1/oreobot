@@ -3,7 +3,7 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getRandomItem, defaultEmbed } from '../../utils.js'
+import { getRandomItem, defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -15,8 +15,7 @@ export const data = new SlashCommandBuilder()
     .addStringOption(option =>
 		option.setName('question')
 			.setDescription('A question you want answered.')
-            .setRequired(true)
-        )
+            .setRequired(true))
 
 export async function execute(interaction) {
     const responses = [[
@@ -44,17 +43,22 @@ export async function execute(interaction) {
         "No.",
         "I think not.",
         "Most unlikely."
-    ]]
+        ]]
+    
+    // Ensure question starts with capitol letter and ends with question mark
+    let question = interaction.options.get('question')?.value
+    question = question.charAt(0).toUpperCase() + question.slice(1)
+    if (!question.endsWith('?')) question += '?'
 
     // Create embed message
-    const resultEmbed = defaultEmbed(interaction, 'Magic 8-ball')
+    const resultEmbed = defaultEmbed(client, interaction.user, 'Magic 8-ball')
     resultEmbed.addFields({
         name: `:question: ${interaction.user.username} asked:`,
-        value: `\`${interaction.options.get('question')?.value}\``,
+        value: `\`${question}\``,
         inline: false
     })
     resultEmbed.addFields({
-            name: ':8ball: 8-ball:',
+            name: ':8ball: The 8-ball says:',
             value: `\`${getRandomItem(getRandomItem(responses))}\``,
             inline: false
     })        
