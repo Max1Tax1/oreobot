@@ -5,6 +5,7 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import { defaultEmbed, numberTextFormat, embedLS, deepCopy } from './general.js'
 
+
 /**
  * Generates an embed message, to display all information of a song.
  * 
@@ -142,9 +143,9 @@ export class QueuePanel {
         if (!queue || queue.length == 0 ) return
         if (this._queueIdsCopy.toString() !== queue.songs.map(song => song.id).toString())
             return await interaction.update({
-                content: `The queue has changed. Please use \`/queue\` again to modify queue!`,
+                content: `:warning: The queue has changed. Please use \`/queue\` again to modify queue!`,
                 embeds: [],
-                buttons: []
+                components: []
             })
         
         // Handle each button interaction
@@ -172,12 +173,11 @@ export class QueuePanel {
             
             // Play the currently selected track now.
             case 'playNow':
-                queue.jump
+                await queue.jump(this._currSelection + 1)
                 return await this._updateQueuePanel(interaction, client, queue)
             case 'playNext':            
                 return await this._updateQueuePanel(interaction, client, queue)
             case 'loopOneMode':
-                
                 return await this._updateQueuePanel(interaction, client, queue, true)
             case 'loopMode':
                 
@@ -189,9 +189,11 @@ export class QueuePanel {
                     content: `Autoplay mode is now ${queue.toggleAutoplay() ? 'on' : 'off'}!`
                 })
                 return await this._updateQueuePanel(interaction, client, queue, true)
+            
+            // Shuffle playlist
             case 'shuffleSongs':
-                
-                return await this._updateQueuePanel(interaction, client, queue, true)
+                await queue.shuffle()
+                return await this._updateQueuePanel(interaction, client, queue)
             
             // Unknown interaction: Just update queue panel
             default:

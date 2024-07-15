@@ -45,12 +45,12 @@ export default async function handleCommands(client) {
         // TODO: 'body: client.commandArray' when bot is ready to be deployed
         // await rest.put(
         //     Routes.applicationCommands(config.botID),
-        //     { body: [] }
+        //     { body: client.commandArray }
         // )
 
         // Guild command registration request (mainly for testing)
         await rest.put(
-            Routes.applicationGuildCommands(secrets.botID, secrets.guildID),
+            Routes.applicationGuildCommands(secrets.botID, secrets.testGuildID),
             { body: client.commandArray }
         )
     } catch (error) {

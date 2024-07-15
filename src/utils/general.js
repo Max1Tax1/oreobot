@@ -2,7 +2,7 @@
  * General utility functions for Oreo
  */
 
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, Emoji } from 'discord.js'
 import { readFile } from 'fs/promises'
 import { fileURLToPath } from 'url'
 import { dirname, join, resolve } from 'path'

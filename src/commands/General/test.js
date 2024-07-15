@@ -15,15 +15,16 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction, client) {
     const delay = 3000
-    setTimeout(() => { 
-        getMedia(interaction, 'Zer0 vs DEN | Down to the floor | #bbu22 Top 16')
+    getMedia(interaction, 'Zer0 vs DEN | Down to the floor | #bbu22 Top 16')
+    setTimeout(() => {
+        getMedia(interaction, 'lofi girl')
     }, delay)
     setTimeout(() => {
-        getMedia(interaction, 'lofi')
-    }, delay)
+        getMedia(interaction, 'lofi cat')
+    }, delay * 2)
     setTimeout(() => {
-        getMedia(interaction, 'lofi')
-    }, delay)
+        getMedia(interaction, 'lofi nature')
+    }, delay * 3)
     await interaction.reply({
         content: 'Done.'
     })

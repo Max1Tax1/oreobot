@@ -35,7 +35,7 @@ export async function execute(interaction, client) {
         // Add media to queue
         getMedia(interaction, mediaName, 'add')
         return await interaction.reply({
-            content: 'Media found, now playing...',
+            content: 'Media found, now queueing...',
             ephemeral: true
         })
     }
