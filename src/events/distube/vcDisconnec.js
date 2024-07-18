@@ -3,9 +3,9 @@
  */
 
 export default {
-    name: 'disconnect',
+    eventName: 'disconnect',
     once: false,
-    async execute(queue) {
+    function: async (queue) => {
         queue.textChannel.send({
             content: `Disconnected from \`${queue.voiceChannel}\` voice channel.`
         })

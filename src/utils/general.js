@@ -2,7 +2,7 @@
  * General utility functions for Oreo
  */
 
-import { EmbedBuilder, Emoji } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { readFile } from 'fs/promises'
 import { fileURLToPath } from 'url'
 import { dirname, join, resolve } from 'path'
@@ -177,4 +177,56 @@ export function numberTextFormat(num) {
     } else {
         return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
     }
+}
+
+/**
+ * Adds a backslash before every punctuation symbol in the given string.
+ *
+ * @param {string} str - The input string.
+ * @returns {string} - The modified string with backslashes before punctuation symbols.
+ */
+export function escapePunc(str) {
+    const punctuationRegex = /([!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])/g
+    return str.replace(punctuationRegex, '\\$1')
+}
+
+/**
+ * Looks up emoji by name and returns the formatted string for the emoji to show graphically.
+ *
+ * @param {string} name - The name of the emoji
+ * @param {boolean} animated - Whether or not the emoji is animated (default false)
+ * @returns {string} - The formatted emoji string for discord to convert into a graphical emoji
+ */
+export function getEmoji(client, name, animated=false) {
+    const emoji = client.emojiList.find(e => e.name === name)
+    return animated ? `a<:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`
+}
+
+
+/**
+ * Adds an event listener to an event emitter with a wrapped function, to catch all arguments dynamically.
+ *
+ * @param {Client} client - The bot client.
+ * @param {Object} eventEmitter - The event emitter where the listener is from.
+ * @param {string} event - The name of the event.
+ * @param {boolean} once - Whether or not this is a one-time listener. (default false)
+ * @param {Function} listenerFunction - The listener's to-do function.
+ * @returns {Function} - The wrapped function that was added as a listener to the event emitter.
+ */
+export function addEventListener(client, eventEmitter, event, once=false, listenerFunction) {
+    const wrappedFunction = function (...args) { listenerFunction(...args, client) }
+    if (once) eventEmitter.once(event, wrappedFunction)
+    else eventEmitter.on(event, wrappedFunction)
+    return wrappedFunction
+}
+
+/**
+ * Removes an event listener from an event emitter.
+ *
+ * @param {Object} eventEmitter - The event emitter where the listener is from.
+ * @param {string} event - The name of the event.
+ * @param {Function} listenerFunction - The listener's to-do function.
+ */
+export function removeEventListener(eventEmitter, event, listenerFunction) {
+    eventEmitter.off(event, listenerFunction)
 }

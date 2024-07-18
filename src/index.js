@@ -2,7 +2,7 @@
  * Main file for oreo bot
  */
 
-import {Client, IntentsBitField, Collection} from 'discord.js'
+import { Client, IntentsBitField } from 'discord.js'
 import { readdirSync } from 'fs'
 import * as secrets from './secrets.js'
 import { printBotInfo } from './utils/general.js'
@@ -29,11 +29,9 @@ const client = new Client({
 // Once the bot is ready, set up the bot
 client.once('ready', async () => {
     try {
-        const handlers = readdirSync("./src/handlers").filter(file => file.endsWith(".js"))
-        client.commands = new Collection()
-        client.commandModules = new Map()
 
-        // Read in and run handlers
+        // Read in and run handlers (ALPHABETICAL ORDER! DO NOT CHANGE FILE NAMES!)
+        const handlers = readdirSync("./src/handlers").filter(file => file.endsWith(".js"))
         for (let file of handlers) {
             const handler = await import(`./handlers/${file}`)
             handler.default(client)

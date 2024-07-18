@@ -41,7 +41,7 @@ export async function execute(interaction, client) {
             })
             return
         
-            // Delete channel messages according to specified amount
+        // Delete channel messages according to specified amount
         } else {
             await interaction.deferReply()
 

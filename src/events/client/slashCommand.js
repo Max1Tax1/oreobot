@@ -3,9 +3,9 @@
  */
 
 export default {
-    name: 'interactionCreate',
+    eventName: 'interactionCreate',
     once: false,
-    async execute(interaction, client) {
+    function: async (interaction, client) => {
 
         // Do not do anything if the user interaction is not a command for Oreo
         if (!interaction.isCommand()) return

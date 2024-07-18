@@ -18,8 +18,8 @@ export async function execute(interaction, client) {
     const queue = client.distube.getQueue(interaction.guild.id)
 
     // Check if user in voice channel of Oreo TODO!!!
-    console.log(voiceChannel)
-    console.log(client.channels.fetch(interaction.member.voice.channel.id))
+    // console.log(voiceChannel)
+    // console.log(client.channels.fetch(interaction.member.voice.channel.id))
     if (!voiceChannel || !client.channels.fetch(interaction.member.voice.channel.id)) {
         return await interaction.reply({
             content: "Please join a voice channel that I'm in first!",

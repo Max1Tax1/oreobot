@@ -1,17 +1,12 @@
 /**
- * Event listener for when distube adds a song
+ * Event listener to notify with an embed when a song is added
  */
-import { songInfoEmbed } from '../../utils/media.js'
-import { embedLS } from '../../utils/general.js'
+import { songInfoEmbed } from '../../utils/distube/utils.js'
 
 export default {
-    name: 'addSong',
+    eventName: 'addSong',
     once: false,
-    async execute(queue, song, client) {
-
-        // Do not return anything when music player is silenced.
-        if (client.distube.silentMode) return
-
+    function: async (queue, song, client) => {
         const songPos = queue.songs.findIndex(queuedSong => queuedSong.id === song.id)
         const addedEmbed = songInfoEmbed(client, song, '➕ Song added to queue', true)
         if (songPos) addedEmbed.addFields({

@@ -8,9 +8,8 @@ import { exit } from 'process'
 
 import { botGuildID } from '../secrets.js'
 
-let emojiList = []
-
 export default async function handleCustomEmojis(client) {
+    client.emojiList = []
 
     // Read in emojis from folder
     try {
@@ -19,7 +18,7 @@ export default async function handleCustomEmojis(client) {
         const pngFiles = readdirSync(emojiDirectory).filter(file => file.toLowerCase().endsWith('.png'))
       
         // Map each file to { name: file name, image: image directory }
-        emojiList = pngFiles.map(file => ({
+        client.emojiList = pngFiles.map(file => ({
             name: parse(file).name,
             url: join(emojiDirectory, file)
         }))
@@ -35,11 +34,9 @@ export default async function handleCustomEmojis(client) {
         // guildEmojis.forEach(emoji => {
         //     emoji.delete()
         // })
-        // guildEmojis.forEach(emoji => {
-        //     console.log(emoji.id)
-        // })
-        emojiList.forEach(emoji => {
-            if (guildEmojis.find(e => e.name === emoji.name)) emoji.id = e.id
+        client.emojiList.forEach(emoji => {
+            const registeredEmoji = guildEmojis.find(e => e.name === emoji.name)
+            if (registeredEmoji) emoji.id = registeredEmoji.id
             else {
                 guild.emojis.create({ attachment: emoji.url, name: emoji.name })
                 .then(emoji => console.log(`✅ Created new emoji with name ${emoji.name}!`))
@@ -52,7 +49,4 @@ export default async function handleCustomEmojis(client) {
     } finally {
         console.log(`✅ Emojis checked and updated!`)
     }
-
-    // Export an additional function to the client that lets the client get emoji by name.
-    client.getEmoji = (name) => { return emojiList.find(e => e.name === name) }
 }

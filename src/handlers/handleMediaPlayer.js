@@ -15,7 +15,7 @@ export default async function handleMusicPlayer(client) {
             new YouTubePlugin()
         ],
     })
+    distube.setMaxListeners(config.musicPlayer.maxListeners)
     process.env.YTSR_NO_UPDATE = '1'
     client.distube = distube
-    client.distube.silentMode = config.musicPlayer.silentMode
 }

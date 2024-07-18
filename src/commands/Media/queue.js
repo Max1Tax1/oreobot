@@ -1,10 +1,10 @@
 /**
  * Command to add media to queue
- * TODO: Check for queue change when button press, and send queue change msg when happen
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getMedia, QueuePanel } from '../../utils/media.js'
+import { getMedia } from '../../utils/distube/utils.js'
+import { MusicController } from '../../utils/distube/MusicController.js'
 
 export const properties = {
     enabled: true,
@@ -47,17 +47,15 @@ export async function execute(interaction, client) {
     })
 
     // Create and send the queue embed message
-    const queuePanel = new QueuePanel(interaction, client, queue)
+    const musicController = new MusicController(interaction, client, 'queue')
     const replyMessage = await interaction.reply({
-        embeds: [queuePanel.embed],
-        components: queuePanel.buttons
+        embeds: [musicController.panel.embed],
+        components: musicController.panel.buttons
     })
 
     // Collector for button interactions
     const collector = await replyMessage.createMessageComponentCollector()
     collector.on('collect', async (inter) => {
-        
-        // Apply appropriate response
-        queuePanel.collectorFunc(inter, client, queue)
+        musicController.collectorFunc(inter, client, queue)
     })
 }

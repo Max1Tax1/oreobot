@@ -2,6 +2,7 @@
  * Handler for registering commands
  */
 
+import { Collection } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 import { readdirSync } from 'fs'
@@ -14,6 +15,7 @@ export default async function handleCommands(client) {
     try {
         const commandsPath = './src/commands'
         client.commandArray = []
+        client.commands = new Collection()
         client.commandModules = new Map()
         for (let folder of readdirSync(commandsPath)) {
             const commandFiles = readdirSync(`${commandsPath}/${folder}`).filter(file => file.endsWith('.js'))
@@ -42,7 +44,6 @@ export default async function handleCommands(client) {
         console.log('🔵 Registering (/) commands with REST API.')
 
         // Global command registration request
-        // TODO: 'body: client.commandArray' when bot is ready to be deployed
         // await rest.put(
         //     Routes.applicationCommands(config.botID),
         //     { body: client.commandArray }

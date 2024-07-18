@@ -3,7 +3,8 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getMedia } from '../../utils/media.js'
+import { getMedia } from '../../utils/distube/utils.js'
+import { addEventListener, removeEventListener } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -14,17 +15,20 @@ export const data = new SlashCommandBuilder()
     .setDescription('Test command.')
 
 export async function execute(interaction, client) {
-    const delay = 3000
-    getMedia(interaction, 'Zer0 vs DEN | Down to the floor | #bbu22 Top 16')
+    const firstDelay = 2000
+    const delay = 500
+
+    getMedia(interaction, 'dropical beatbox circlejam helium')
     setTimeout(() => {
         getMedia(interaction, 'lofi girl')
-    }, delay)
+    }, firstDelay)
     setTimeout(() => {
         getMedia(interaction, 'lofi cat')
-    }, delay * 2)
+    }, firstDelay + delay)
     setTimeout(() => {
         getMedia(interaction, 'lofi nature')
-    }, delay * 3)
+    }, firstDelay + delay * 2)
+
     await interaction.reply({
         content: 'Done.'
     })

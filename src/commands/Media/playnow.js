@@ -3,7 +3,7 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getMedia } from '../../utils/media.js'
+import { getMedia } from '../../utils/distube/utils.js'
 
 export const properties = {
     enabled: true,

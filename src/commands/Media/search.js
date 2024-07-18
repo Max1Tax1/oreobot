@@ -11,7 +11,7 @@ export const properties = {
 }
 export const data = new SlashCommandBuilder()
     .setName('search')
-    .setDescription("Search for media and choose a search result to play/add to playlist.")
+    .setDescription("Search for media and choose a search result to play/add to queue.")
     .addStringOption(option =>
 		option.setName('media')
 			.setDescription('The media to be played. Can be a search or the URL.')

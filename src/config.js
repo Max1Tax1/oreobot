@@ -9,9 +9,10 @@ export const embedSeparator = '━━━━━━━━━━━━━━━━�
 export const mongodbURL = 'mongodb+srv://shiva:shiva@musicbotyt.ouljywv.mongodb.net/?retryWrites=true&w=majority'
 export const language = 'en'
 
-export const playlistSettings = {
-    maxPlaylist: 10,
+export const queueSettings = {
+    maxqueue: 10,
     maxTrackPerList: 75,
+    queuePanelTimeout: 60000
 }
 
 export const musicPlayer = {
@@ -26,4 +27,5 @@ export const musicPlayer = {
         ffmpeg: { path: ffmpegPath }
     },
     maxVol: 150,
+    maxListeners: 5
 }

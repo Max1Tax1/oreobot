@@ -3,9 +3,9 @@
  */
 
 export default {
-    name: 'error',
+    eventName: 'error',
     once: false,
-    execute(error) {
+    function: (error) => {
         console.error('❌ An error occurred:\n', error)
     },
 }
