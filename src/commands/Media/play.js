@@ -3,8 +3,8 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { defaultEmbed } from '../../utils/general.js'
-import { getMedia } from '../../utils/distube/utils.js'
+import { defaultEmbed, checkVCState } from '../../utils/general.js'
+import { playMedia } from '../../utils/distube/utils.js'
 
 export const properties = {
     enabled: true,
@@ -19,41 +19,37 @@ export const data = new SlashCommandBuilder()
             .setRequired(false))
 
 export async function execute(interaction, client) {
-    const voiceChannel = interaction.member.voice.channel
     const mediaName = interaction.options.get('media')?.value
-    const queue = client.distube.getQueue(interaction.guild.id)
-
-    // Check if user in voice channel
-    if (!voiceChannel) return await interaction.reply({
-        content: 'Please join a voice channel first!',
-        ephemeral: true
-    })
+    const queue = await client.distube.getQueue(interaction.guild.id)
 
     // If command invoked is to unpause media player
     if (!mediaName) {
-        if (!queue) await interaction.reply({
-            content: 'There is no media to play. Try \`/play\` again with a \`media\` name!',
+        
+        // Check if inactive media player
+        if (!queue) return await interaction.reply({
+            content: 'The media player is currently inactive. Try \`/play\` again with a \`media\` name!',
             ephemeral: true
         })
+
+        // Check if already paused
+        else if (queue.playing) return await interaction.reply({
+            content: 'The media player is already playing!',
+            ephemeral: true
+        })
+
+        // Unpause the media player
         else if (queue.paused) {
             queue.resume()
             const replyEmbed = defaultEmbed(client, interaction.user, '▶️Player resumed')
             replyEmbed.setDescription('Media player has been unpaused.')
-            await interaction.reply({
+            return await interaction.reply({
                 embeds: [replyEmbed]
             }
-        )}
-        else if (queue.playing) await interaction.reply({
-            content: 'The media player is already playing!',
-            ephemeral: true
-        })
-        return
+            )
+        }
     }
     
     // Media name specified, search and play media
-    getMedia(interaction, mediaName)
-    await interaction.reply({
-        content: 'Media found, now playing...',
-        ephemeral: true
-    })
+    const replyMessage = await playMedia(interaction, mediaName, 'default', true)
+    return await interaction.reply(replyMessage)
 }

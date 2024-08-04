@@ -10,7 +10,7 @@ export const properties = {
 }
 export const data = new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Pings the bot, to test if commands work.')
+    .setDescription('Pings Oreo.')
 
 export async function execute(interaction) {
 

@@ -3,7 +3,7 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { defaultEmbed } from '../../utils/general.js'
+import { defaultEmbed, checkVCState } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -18,8 +18,14 @@ export async function execute(interaction, client) {
     // Check if media player already isn't playing
     const queue = client.distube.getQueue(interaction.guild.id)
     if (!queue) return await interaction.reply({
-            content: 'The media player is not playing anything',
-            ephemeral: true
+        content: 'The media player is not playing anything.',
+        ephemeral: true
+    })
+
+    // Check if user in voice channel of Oreo
+    if (!checkVCState(interaction, client) == 3) return await interaction.reply({
+        content: "We're not in the same place! Please join a voice channel that I'm in first.",
+        ephemeral: true
     })
     
     // Tells the media player to stop

@@ -3,29 +3,39 @@
  * Config file for Oreo
  */
 import ffmpegPath from 'ffmpeg-static'
+import { YouTubePlugin } from '@distube/youtube'
+import { SoundCloudPlugin } from '@distube/soundcloud'
+import { SpotifyPlugin } from '@distube/spotify'
 
+export const testMode = true
 export const embedColour = 'F9F6EE'
 export const embedSeparator = '━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-export const mongodbURL = 'mongodb+srv://shiva:shiva@musicbotyt.ouljywv.mongodb.net/?retryWrites=true&w=majority'
-export const language = 'en'
+
+export const assetFolders = [
+    'entertainment',
+    'playerpanel'
+]
 
 export const queueSettings = {
-    maxqueue: 10,
+    maxQueue: 10,
     maxTrackPerList: 75,
-    queuePanelTimeout: 60000
 }
 
+export const mediaSearchType = {
+    youtube: 'video',
+    soundcloud: 'track',
+    spotify: 'track'
+}
+export const searchLimit = 8
+
 export const musicPlayer = {
-    silentMode: false,
-    DJ: {
-        commands: ['back', 'clear', 'filter', 'loop', 'pause', 'resume', 'skip', 'stop', 'volume', 'shuffle'],
-    },
+    allowNotif: true,
     distubeOptions: {
         emitNewSongOnly: true,
         emitAddSongWhenCreatingQueue: false,
         emitAddListWhenCreatingQueue: false,
         ffmpeg: { path: ffmpegPath }
     },
-    maxVol: 150,
-    maxListeners: 5
+    maxListeners: 5,
+    maxVol: 100
 }

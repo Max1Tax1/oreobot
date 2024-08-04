@@ -81,7 +81,6 @@ export async function buildHelpPages(client) {
 
         // For any additional help pages to attach to modules
         getModuleExtraEmbeds(client, module).forEach(embed => {
-            embed.addFields({ name: ' ', value: `*Press ${getEmoji(client, 'o_navigate')} to return to the navigator.*` })
             pagesList.push(embed)
         })
 
@@ -125,9 +124,14 @@ export async function buildHelpPages(client) {
  * @returns {EmbedBuilder[]} An array of extra help embeds for the specified module, if there is any.
  */
 function getModuleExtraEmbeds(client, module) {
+    const tailMessage = `*Press ${getEmoji(client, 'o_navigate')} to return to the navigator.*`
     switch (module) {
         case 'Media':
-            return [getPlayerHelpEmbed(client), getQueueHelpEmbed(client)]
+            return [
+                getPlayerHelpEmbed(client, [], tailMessage),
+                getQueueHelpEmbed(client, [], tailMessage),
+                getSearchHelpEmbed(client, tailMessage)
+            ]
         default:
             return []
     }
@@ -157,45 +161,101 @@ function getMediaNavHelpField(client, panels) {
 }
 
 // Media queue control panel help page
-export function getQueueHelpEmbed(client) {
+export function getQueueHelpEmbed(client, navPanelOptions, tailMessage, hasNavHelp=false) {
     const e = (name) => { return getEmoji(client, name) }
-    const embed = defaultEmbed(client, null, '📼 Queue Panel Help', false, false)
+    const embed = defaultEmbed(client, null, '🎼 Queue Panel Help', false, false)
     embed.setDescription(embedLS(false) +
         "The /\`queue\` Queue Panel is for viewing and managing queued songs.\n" +
-        "Below is the legend for the control panel's buttons." +
+        "Below is the legend for the panel's buttons." +
         embedLS(true, false))
     embed.addFields([{
-        name: 'Selection Controls', 
+        name: 'Track Selection Controls', 
         value: `Use ${e('o_arrow_up')} and ${e('o_arrow_down')} to select tracks from the Media Queue.
-        Selected track is **bold** and has an ➜ next to its name.`
+        Use ${e('o_goto_top')} and ${e('o_goto_bottom')} to select the first/last track.
+        Selected track is **bold** and has ➜ next to its name.`
     }, { name: ' ', value: ' ' }])
     embed.addFields([{
-        name: 'Queued Media Control',
+        name: 'Selected Track Options',
         value: 
-            `- ${e('o_play_now')}: Immediately plays selected media, skips the current one.\n` +
+            `- ${e('o_song_info')}: Displays the selected track's information.\n` +
+            `- ${e('o_delete')}: Removes the selected track from the Media Queue.\n` +
+            `- ${e('o_play_now')}: Immediately plays selected media, skipping the current one.\n` +
             `- ${e('o_play_next')}: Queues selected media as the next to be played.\n` +
             `- ${e('o_jumpto')}: Immediately plays selected media, skipping everything in queue before it.\n` +
-            `- ${e('o_shuffle')}: Shuffles queue order.\n` +
             `- ${e('o_find_related')}: Adds media related to the current track to queue.`
     }, { name: ' ', value: ' ' }])
     embed.addFields([{
-        name: 'Queue Mode Switches',
+        name: 'Queue Options',
         value: 
-            `- ${e('o_repeat_one_off')}: Loops the current track.\n` +
-            `- ${e('o_repeat_off')}: Loops the entire queue.\n` +
-            `- ${e('o_autoplay_off')}: Automatically add related tracks when queue is empty.`
+            `- ${e('o_repeat_one_off')}: Toggle on/off Looping for the current track.\n` +
+            `- ${e('o_repeat_off')}: Toggle on/off Looping for the entire queue.\n` +
+            `- ${e('o_autoplay_off')}: Toggle on/off autoplay.\n` +
+            `- ${e('o_shuffle')}: Shuffles the play order of tracks in queue.\n` +
+            `- ${e('o_queue_remove')}: Removes all queued tracks.`
     }, { name: ' ', value: ' ' }])
-    embed.addFields(getMediaNavHelpField(client, ['player']))
-    embed.addFields({ name: embedLS(), value: ' ' })
+    if (hasNavHelp) embed.addFields(getMediaNavHelpField(client, navPanelOptions))
+    else embed.addFields({ name: embedLS(), value: tailMessage })
     return embed
 }
 
 // Media player panel help page
-export function getPlayerHelpEmbed(client) {
+export function getPlayerHelpEmbed(client, navPanelOptions, tailMessage, hasNavHelp=false) {
     const e = (name) => { return getEmoji(client, name) }
     const embed = defaultEmbed(client, null, '📼 Media Player Help', false, false)
-    embed.addFields(getMediaNavHelpField(client, ['queue']))
-    embed.addFields({ name: embedLS(), value: ' ' })
+    embed.setDescription(embedLS(false) +
+        "The /\`player\` Media Player displays the currently playing song and control buttons.\n" +
+        "Below is the legend for the panel's buttons." +
+        embedLS(true, false))
+    embed.addFields([{
+        name: 'Track Controls',
+        value: 
+            `- ${e('o_pause')}, ${e('o_play')}: Pauses/resumes the media player\n` +
+            `- ${e('o_prev_track')}, ${e('o_next_track')}: Skips to the previous/next track.\n` +
+            `- ${e('o_seek_forward')}, ${e('o_seek_backward')}: Seeks 30 seconds forward/backward.\n` +
+            `- ${e('o_song_info')}: Displays the currently playing track's information.`
+    }, { name: ' ', value: ' ' }])
+    embed.addFields([{
+        name: 'Mode Controls', 
+        value:
+            `- ${e('o_repeat_one_off')}: Toggle on/off Looping for the current track.\n` +
+            `- ${e('o_autoplay_off')}: Toggle on/off autoplay.`
+    }, { name: ' ', value: ' ' }])
+    embed.addFields([{
+        name: 'Volume Controls', 
+        value: `Use ${e('o_volume_up')} and ${e('o_volume_down')} to adjust the volume of the player.`
+    }, { name: ' ', value: ' ' }])
+    if (hasNavHelp) embed.addFields(getMediaNavHelpField(client, navPanelOptions))
+    embed.addFields({ name: embedLS(), value: tailMessage })
     return embed
 }
+
+// Search navigation help page
+export function getSearchHelpEmbed(client, tailMessage, hasNavHelp=false) {
+    const e = (name) => { return getEmoji(client, name) }
+    const embed = defaultEmbed(client, null, '🔍 Search Function Help', false, false)
+    embed.setDescription(embedLS(false) +
+        "The /\`search\` command brings up a search result embed fo pick and choose a searched song.\n" +
+        `Currently supports searching on \`${Object.keys(client.distube.extractorPlugins).join('\`, \`')}\`.\n` +
+        "Below is the legend for the buttons." +
+        embedLS(true, false))
+    embed.addFields([{
+        name: 'Result Selection Controls', 
+        value: `Use ${e('o_arrow_up')} and ${e('o_arrow_down')} to select tracks from the results.
+        Use ${e('o_goto_top')} and ${e('o_goto_bottom')} to select the first/last track.
+        Selected track is **bold** and has ➜ next to its name.`
+    }, { name: ' ', value: ' ' }])
+    embed.addFields([{
+        name: 'Selected Track Options',
+        value: 
+            `- ${e('o_queue_add')}: Adds selected result to the back of queue.\n` +
+            `- ${e('o_play_next')}: Queues selected result as the next to be played.\n` +
+            `- ${e('o_play_now')}: Immediately plays selected result, skips currently playing track.\n` +
+            `- ${e('o_song_info')}: Displays the selected result's information.`
+    }, { name: ' ', value: ' ' }])
+    if (hasNavHelp) embed.addFields(getMediaNavHelpField(client, []))
+    embed.addFields({ name: embedLS(), value: tailMessage })
+    return embed
+}
+
+
 // ------------------------------------------------

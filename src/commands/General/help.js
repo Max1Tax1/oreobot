@@ -11,6 +11,10 @@ export const properties = {
 export const data = new SlashCommandBuilder()
     .setName('help')
     .setDescription('Help page for Oreo.')
+    .addStringOption(option =>
+        option.setName('module')
+            .setDescription("Display specified module's help page.")
+            .setRequired(false))
 
 export async function execute(interaction, client) {
     const helpEmbedPages = client.helpPages

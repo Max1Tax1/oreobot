@@ -1,2 +1,5 @@
 src/secrets.js
-src/mongoDB.js
+src/commands/General/test.js
+discord-bot-key-pair.ppk
+run.bat
+.vscode

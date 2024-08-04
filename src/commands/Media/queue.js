@@ -3,8 +3,10 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getMedia } from '../../utils/distube/utils.js'
+import { playMedia } from '../../utils/distube/utils.js'
 import { MusicController } from '../../utils/distube/MusicController.js'
+import { checkVCState } from '../../utils/general.js'
+import * as config from '../../config.js'
 
 export const properties = {
     enabled: true,
@@ -19,43 +21,38 @@ export const data = new SlashCommandBuilder()
             .setRequired(false))
 
 export async function execute(interaction, client) {
-    const voiceChannel = interaction.member.voice.channel
     const mediaName = interaction.options.get('media')?.value
     const queue = client.distube.getQueue(interaction.guild.id)
+    const vcState = checkVCState(interaction, client)
 
     // User specified media, add media to queue
     if (mediaName) {
-
-        // Check if user in voice channel
-        if (!voiceChannel) return await interaction.reply({
-            content: 'Please join a voice channel first!',
-            ephemeral: true
-        })
-
-        // Add media to queue
-        getMedia(interaction, mediaName, 'add')
-        return await interaction.reply({
-            content: 'Media found, now queueing...',
-            ephemeral: true
-        })
+        const replyMessage = await playMedia(interaction, mediaName, 'default', true)
+        return await interaction.reply(replyMessage)
     }
 
     // Check if media player is active (playing song/queued songs)
     if (!queue) return await interaction.reply({
-        content: 'The media player is inactive, and the queue is empty. Try \`/play\` with a \`media\` name to start playing!',
+        content: 'The media player is inactive. Join a voice channel, ' +
+            'and try \`/play\` with a \`media\` name to start playing!',
+        ephemeral: true
+    })
+
+    // Check if user in voice channel of Oreo
+    if (!vcState == 3) return await interaction.reply({
+        content: "We're not in the same place! Please join a voice channel that I'm in first.",
         ephemeral: true
     })
 
     // Create and send the queue embed message
+    await interaction.deferReply()
     const musicController = new MusicController(interaction, client, 'queue')
-    const replyMessage = await interaction.reply({
-        embeds: [musicController.panel.embed],
-        components: musicController.panel.buttons
-    })
+    await musicController.init()
+    const replyMessage = await interaction.followUp(musicController.panel.panelMessage)
 
     // Collector for button interactions
     const collector = await replyMessage.createMessageComponentCollector()
     collector.on('collect', async (inter) => {
-        musicController.collectorFunc(inter, client, queue)
+        musicController.collectorFunc(inter, queue)
     })
 }

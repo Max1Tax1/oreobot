@@ -4,11 +4,11 @@
  */
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
+import { RepeatMode } from 'distube'
 import { getEmoji, deepCopy } from '../general.js'
 import { getQueueHelpEmbed, getPlayerHelpEmbed } from '../help.js'
 import { PlayerPanel } from './PlayerPanel.js'
 import { QueuePanel } from './QueuePanel.js'
-import { songInfoEmbed } from './utils.js'
 
 /**
  * A class that represents the music controller, which is used produce an UI for the user to 
@@ -22,33 +22,43 @@ export class MusicController {
      * @param {string} display - Which panel the music controller should show. Can be 'player' or 'queue'.
      */
     constructor(interaction, client, display = 'player') {
-
-        // Build queue help embed
-        const returnEmoji = getEmoji(client, 'o_return')
-        this._queueHelpEmbed = getQueueHelpEmbed(client)
-        this._queueHelpEmbed.addFields({ name: ' ', value: `*Press the ${returnEmoji} button to return to queue panel.*` })
-
-        // Build player help embed
-        this._playerHelpEmbed = getPlayerHelpEmbed(client)
-        this._playerHelpEmbed.addFields({ name: ' ', value: `*Press the ${returnEmoji} button to return to music player.*` })
-
-        // Build return to panel button
-        this._returnButtons = [new ActionRowBuilder().addComponents([
-            new ButtonBuilder().setCustomId('return')
-                .setEmoji(returnEmoji)
-                .setStyle(ButtonStyle.Success)
-        ])]
-
-        // Build both panels related to the music controller
-        this._playerPanel = new PlayerPanel(interaction, client, this._getNavButtons(client, ['queue'], true))
-        this._queuePanel = new QueuePanel(interaction, client, this._getNavButtons(client, ['player'], true))
+        this.interaction = interaction
+        this.client = client
 
         // Get a copy of the queue, for safe guarding purposes
         const queue = client.distube.getQueue(interaction.guild.id)
-        this._queueIdsCopy = deepCopy(queue.songs.map(song => song.id))
+        this._queueIdsCopy = deepCopy(queue.songs.map(song => song.uid))
+        
+        // Setup panels
+        this._initDisplay = display
+        this._setCollectorFunc()
+    }
 
-        // Set the active display to show
-        switch (display) {
+    // Function to set up music controller. Must be run after creation.
+    async init() {
+            
+        const returnEmoji = getEmoji(this.client, 'o_return')
+
+        // Build player panel and help embed
+        const playerHelpTailText = `*Press the ${returnEmoji} button to return to music player.*`
+        const playerPanelNavOptions = ['queue']
+        this._playerPanel = new PlayerPanel(this.interaction, this.client,
+            this._getNavButtons(playerPanelNavOptions),
+            getPlayerHelpEmbed(this.client, playerPanelNavOptions, playerHelpTailText, true)
+        )
+        await this._playerPanel.init()
+
+        // Build queue panel and help embed
+        const queueHelpTailText = `*Press the ${returnEmoji} button to return to queue panel.*`
+        const queuePanelNavOptions = ['player']
+        this._queuePanel = new QueuePanel(this.interaction, this.client,
+            this._getNavButtons(queuePanelNavOptions),
+            getQueueHelpEmbed(this.client, queuePanelNavOptions, queueHelpTailText, true)
+        )
+        await this._queuePanel.init()
+
+        // Set the active display to show on startup
+        switch (this._initDisplay) {
             case 'player':
                 this.panel = this._playerPanel
                 break
@@ -56,101 +66,121 @@ export class MusicController {
                 this.panel = this._queuePanel
                 break
             default:
-                throw new Error(`Failed creating MusicController - display: "${display}" is invalid!`)
+                throw new Error(`Failed MusicController init - Display: "${display}" is invalid!`)
         }
-        this._setCollectorFunc()
+
+        return this
     }
 
-    // Function that is "attached" to the collector function, for panel navigation
+    // Functions for panel navigation
     navCollectorActions = {
     
         // Navigate to this panel's help page
-        help: async (interaction, client, queue) => {
-            const helpEmbed = (this.panel === this._playerPanel) ?
-                this._playerHelpEmbed : this._queueHelpEmbed
+        help: async (interaction) => {
             return await interaction.update({
-                embeds: [helpEmbed],
-                components: this._returnButtons
-            })
-        },
-                    
-        // Navigate to the currently playing song's info
-        getInfo: async (interaction, client, queue) => {
-            const currSong = queue.songs[0]
-            return await interaction.update({
-                embeds: [songInfoEmbed(client, currSong, 'ℹ️ Song Info')],
-                components: this._returnButtons
+                embeds: [this.panel.helpEmbed],
+                components: this.panel.returnButtons,
+                files: []
             })
         },
 
         // For returning to whatever panel it was before
-        return: async (interaction, client, queue) => {
-            return await this.switchPanel(interaction, client, this.panel)
+        return: async (interaction) => {
+            return await this.switchPanel(interaction, this.panel)
         },
             
         // For player panel navigation
-        queue: async (interaction, client, queue) => {
-            return await this.switchPanel(interaction, client, this._queuePanel)
+        queue: async (interaction) => {
+            return await this.switchPanel(interaction, this._queuePanel)
         },
             
         // For queue panel navigation
-        player: async (interaction, client, queue) => {
-            return await this.switchPanel(interaction, client, this._playerPanel)
+        player: async (interaction) => {
+            return await this.switchPanel(interaction, this._playerPanel)
         },
             
         // Close the music controller
-        close: async (interaction, client, queue) => {
+        close: async (interaction) => {
             return await interaction.update({
                 content: `This panel has been closed.`,
-                embeds: [],
-                components: []
+                embeds: [], components: [], files: []
             }).then(setTimeout(() => { interaction.deleteReply() }, 2000))
+        }
+    }
+
+    // Functions for setting music player mode (shared between queue and player panels)
+    modeCollectorActions = {
+
+        // Toggle loop track mode. Will turn off loop queue if it is on. 
+        loopOneMode: async (interaction, queue) => {
+            const loopOneMode = queue.repeatMode === 0 || queue.repeatMode === 2 ?
+                RepeatMode.SONG : RepeatMode.DISABLED
+            await queue.setRepeatMode(loopOneMode)
+            return await this.panel.updatePanel(interaction)
+        },
+
+        // Toggle loop queue mode. Will turn off loop track if it is on.
+        loopMode: async (interaction, queue) => {
+            const loopMode = queue.repeatMode === 0 || queue.repeatMode === 1 ?
+                RepeatMode.QUEUE : RepeatMode.DISABLED
+            await queue.setRepeatMode(loopMode)
+            return await this.panel.updatePanel(interaction)
+        },
+
+        // Turn on/off autoplay mode
+        autoPlayMode: async (interaction, queue) => {
+            await queue.toggleAutoplay()
+            return await this.panel.updatePanel(interaction)
         }
     }
 
     // Function to define the collecter function, with the currently displayed panel's collector also
     _setCollectorFunc() {
-        this.collectorFunc = async (interaction, client, queue) => {
+        this.collectorFunc = async (interaction) => {
+            const queue = await this.client.distube.getQueue(interaction.guild.id)
             
             // Safeguard for invalid queue or changed queue before button interaction
             if (!queue) return await interaction.update({
-                content: 'The media player is inactive and the queue is empty. Try \`/play\` with a \`media\` name to start playing!',
-                embeds: [],
-                components: []
+                content: 'The media player is inactive and the queue is empty.' +
+                    'Be in a voice channel, and try \`/play\` with a \`media\` name to start playing!',
+                embeds: [], components: [], files: []
             })
-            if (this._queueIdsCopy.toString() !== queue.songs.map(song => song.id).toString()) {
+            if (this._queueIdsCopy.toString() !== queue.songs.map(song => song.uid).toString()) {
                 return await interaction.update({
                     content: ':warning: The queue has changed. Please try the command again!',
-                    embeds: [],
-                    components: []
+                    embeds: [], components: [], files: []
                 })
             }
             
             // Safely execute collector functions
             const actionId = interaction.customId
-            if (this.navCollectorActions[actionId]) return await this.navCollectorActions[actionId](interaction, client, queue)
+            if (this.navCollectorActions[actionId]) return await this.navCollectorActions[actionId](interaction, queue)
+            else if (this.modeCollectorActions[actionId]) return await this.modeCollectorActions[actionId](interaction, queue)
             else if (this.panel.collectorActions[actionId]) {
-                await this.panel.collectorActions[actionId](interaction, client, queue)
-                this._queueIdsCopy = deepCopy(queue.songs.map(song => song.id))
+                await this.panel.collectorActions[actionId](interaction, queue)
+                this._queueIdsCopy = deepCopy(queue.songs.map(song => song.uid))
+            }
+            else {
+                console.error(`❌ Unknown interaction ID ${interaction.customId} received.`)
             }
         }
     }
 
     // Switches to a different display panel
-    async switchPanel(interaction, client, panel) {
+    async switchPanel(interaction, panel) {
         if (this.panel !== panel) {
             this.panel = panel
             this._setCollectorFunc()
         }
-        this.panel.updatePanel(interaction, client)
+        await this.panel.updatePanel(interaction)
     }
 
     // Function that returns the navigation buttons based on current panel
-    _getNavButtons(client, panels, musicInfoButton=false) {
+    _getNavButtons(panels) {
 
         // Put the help button as the first button
         let panelNavButtons = [new ButtonBuilder().setCustomId('help')
-            .setEmoji(getEmoji(client, 'o_help'))
+            .setEmoji(getEmoji(this.client, 'o_help'))
             .setStyle(ButtonStyle.Success)]
 
         // Put any subsequent panel navigation buttons next
@@ -158,26 +188,21 @@ export class MusicController {
             switch (panel) {
                 case 'player':
                     panelNavButtons.push(new ButtonBuilder().setCustomId('player')
-                        .setEmoji(getEmoji(client, 'o_music_player'))
+                        .setEmoji(getEmoji(this.client, 'o_music_player'))
                         .setStyle(ButtonStyle.Success))
                     break
                 case 'queue':
                     panelNavButtons.push(new ButtonBuilder().setCustomId('queue')
-                        .setEmoji(getEmoji(client, 'o_queue_list'))
+                        .setEmoji(getEmoji(this.client, 'o_queue_list'))
                         .setStyle(ButtonStyle.Success))
                     break
                 default: console.warn(`⚠️ Navigation button "${panel}" is not valid in Music Controller!`)
             }
         })
-
-        // Put music info button if enabled
-        if (musicInfoButton) panelNavButtons.push(new ButtonBuilder().setCustomId('getInfo')
-            .setEmoji(getEmoji(client, 'o_song_info'))
-            .setStyle(ButtonStyle.Success))
         
         // Lastly, put in close panel button
         panelNavButtons.push(new ButtonBuilder().setCustomId('close')
-        .setEmoji(getEmoji(client, 'o_close_panel'))
+        .setEmoji(getEmoji(this.client, 'o_close_panel'))
         .setStyle(ButtonStyle.Danger))
 
         return new ActionRowBuilder().addComponents(panelNavButtons)

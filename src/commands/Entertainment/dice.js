@@ -2,8 +2,8 @@
  * Command for Oreo to roll a dice and send the results in an embed message
  */
 
-import { SlashCommandBuilder } from 'discord.js'
-import { getRandomItem, randInt } from '../../utils/general.js'
+import { SlashCommandBuilder, AttachmentBuilder } from 'discord.js'
+import { getRandomItem, randInt, defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -21,7 +21,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction, client) {
     const botAvatar = client.user.avatarURL({ dynamic: true })
     const userResponse = interaction.options.get('faces')?.value
-    const diceFaces = (userResponse != null) ? userResponse : 6
+    const diceFaces = userResponse ? userResponse : 6
     const responses = [
         "I got a ",
         "It landed on ",
@@ -35,19 +35,19 @@ export async function execute(interaction, client) {
         "The dice says "
     ]
 
-    await interaction.deferReply()
-
     // Create embed message
     const resultEmbed = defaultEmbed(client, interaction.user, diceFaces + '-Sided Dice Toss')
     
     // Send ball embed if 1 dice face
     if (diceFaces == 1) {
+        const fileName = 'diceball.png'
+        const image = new AttachmentBuilder(client.assets.entertainment.get(fileName), { name: fileName })
         resultEmbed.setAuthor({ name: 'Ball.', url: null, iconURL: botAvatar })
         resultEmbed.setDescription("You wanted a ball, here's a ball.")
-        resultEmbed.setThumbnail('attachment://diceball.png')
-        await interaction.followUp({
+        resultEmbed.setThumbnail(`attachment://${fileName}`)
+        await interaction.reply({
             embeds: [resultEmbed],
-            files: ['./resources/images/diceball.png']
+            files: [image]
         })
         return
     }
@@ -67,7 +67,7 @@ export async function execute(interaction, client) {
         resultEmbed.setDescription("That's a big dice!")
     }
 
-    await interaction.followUp({
+    await interaction.reply({
         embeds: [resultEmbed]
     })
 }

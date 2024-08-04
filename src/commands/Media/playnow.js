@@ -3,7 +3,8 @@
  */
 
 import { SlashCommandBuilder } from 'discord.js'
-import { getMedia } from '../../utils/distube/utils.js'
+import { playMedia } from '../../utils/distube/utils.js'
+import { checkVCState } from '../../utils/general.js'
 
 export const properties = {
     enabled: true,
@@ -18,20 +19,10 @@ export const data = new SlashCommandBuilder()
             .setRequired(true))
 
 export async function execute(interaction, client) {
-    const voiceChannel = interaction.member.voice.channel
     const mediaName = interaction.options.get('media')?.value
-    const queue = client.distube.getQueue(interaction.guild.id)
-
-    // Check if user in voice channel
-    if (!voiceChannel) return await interaction.reply({
-        content: 'Please join a voice channel first!',
-        ephemeral: true
-    })
     
     // Play specified song immediately
-    getMedia(interaction, mediaName, 'playNow')
-    await interaction.reply({
-        content: 'Media found, now playing...',
-        ephemeral: true
-    })
+    await interaction.deferReply()
+    const replyMessage = await playMedia(interaction, mediaName, 'playNow', true)
+    await interaction.followUp(replyMessage)
 }

@@ -2,7 +2,7 @@
  * Command for Oreo to flip a coin and send the results in an embed message
  */
 
-import { SlashCommandBuilder } from 'discord.js'
+import { SlashCommandBuilder, AttachmentBuilder } from 'discord.js'
 import { getRandomItem, defaultEmbed } from '../../utils/general.js'
 
 export const properties = {
@@ -28,8 +28,6 @@ export async function execute(interaction, client) {
         "The coin landed on "
     ]
 
-    await interaction.deferReply()
-
     // Create embed message
     const resultEmbed = defaultEmbed(client, interaction.user, 'Coin Flip')
     resultEmbed.addFields({
@@ -39,17 +37,11 @@ export async function execute(interaction, client) {
         })        
     
     // Attach appropriate image thumbnail to embed message and send
-    if (result == 'Heads') {
-        resultEmbed.setThumbnail('attachment://coinheads.png')
-        await interaction.followUp({
-            embeds: [resultEmbed],
-            files: ['./resources/images/coinheads.png']
-        })
-    } else {
-        resultEmbed.setThumbnail('attachment://cointails.png')
-        await interaction.followUp({
-            embeds: [resultEmbed],
-            files: ['./resources/images/cointails.png']
-        })
-    }
+    const fileName = result == 'Heads' ? 'coinheads.png' : 'cointails.png'
+    const image = new AttachmentBuilder(client.assets.entertainment.get(fileName), { name: fileName })
+    resultEmbed.setThumbnail(`attachment://${fileName}`)
+    await interaction.reply({
+        embeds: [resultEmbed],
+        files: [image]
+    })
 }
