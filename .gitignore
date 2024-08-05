@@ -1,7 +1,0 @@
-.gitignore
-src/secrets.js
-src/commands/General/test.js
-discord-bot-key-pair.ppk
-discord-bot-key-pair.pem
-run.bat
-.vscode
