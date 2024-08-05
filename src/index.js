@@ -49,7 +49,7 @@ client.once('ready', async () => {
                 console.log(`    🔵 ${handler.startMessage}...`)
                 await handler.default(client)
             } catch (error) {
-                console.error(`    ❌ Error occurred during setup, at ${basename(file)}`)
+                console.error(`    ❌ Error occurred during setup, at ${basename(file)}\n${error}`)
                 process.exit(1)
             } finally {
                 console.log(`    ✅ ${handler.finishMessage}!`)
