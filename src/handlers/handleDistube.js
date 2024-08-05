@@ -7,13 +7,16 @@ import { YouTubePlugin } from '@distube/youtube'
 import { SoundCloudPlugin } from '@distube/soundcloud'
 import { SpotifyPlugin } from '@distube/spotify'
 import * as config from '../config.js'
+import * as secrets from '../secrets.js'
 
 export const startMessage = 'Setting up DisTube module'
 export const finishMessage = 'DisTube setup complete'
 export default async function handleDistube(client) {
     try {
         const extractorPlugins = {
-            youtube: new YouTubePlugin(),
+            youtube: new YouTubePlugin({
+                cookies: secrets.youtubeCookies
+            }),
             soundcloud: new SoundCloudPlugin(),
             spotify: new SpotifyPlugin()
         }

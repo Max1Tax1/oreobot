@@ -47,6 +47,9 @@ export async function execute(interaction, client) {
     collector.on('collect', async (inter) => {
         const actionId = inter.customId
         if (searchResults.collectorActions[actionId]) return await searchResults.collectorActions[actionId](inter)
-        else console.error(`❌ Unknown interaction ID ${actionId} received.`)
+        else {
+            console.error(`❌ Unknown interaction ID ${actionId} received.`)
+            inter.deferUpdate()
+        }
     })
 }
