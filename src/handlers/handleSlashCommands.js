@@ -53,10 +53,16 @@ export default async function handleSlashCommands(client) {
         )
 
         // Guild command registration request (for testing)
-        else await rest.put(
-            Routes.applicationGuildCommands(secrets.botID, secrets.testGuildID),
-            { body: client.commandArray }
-        )
+        else {
+            await rest.put(
+                Routes.applicationCommands(secrets.botID),
+                { body: [] }
+            )
+            await rest.put(
+                Routes.applicationGuildCommands(secrets.botID, secrets.testGuildID),
+                { body: client.commandArray }
+            )
+        }
     } catch (error) {
         throw new Error(`Error occurred whilst registering (/) commands with REST API:\n${error}`)
     }

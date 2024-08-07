@@ -156,62 +156,6 @@ export function getEmoji(client, name, animated=false) {
     return animated ? `a<:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`
 }
 
-/**
- * Creates a progress bar of desired size, with Discord Emojis.
- * Note: UNUSED and BROKEN.
- * 
- * @param {Client} client - The bot client.
- * @param {integer} size - How many emojis to use for the bar.
- * @param {integer} currAt - The actual current position of the progress.
- * @param {integer} length - The total amount of progression.
- * @param {string} style - The style of the progress bar. Can be 'm' (music) or 's' (slider)
- * @returns {string} A progress bar, formatted with the Discord Emoji input.
- */
-export function progressBar(client, size, currAt, length, style='s') {
-
-    // Checkers to ensure a valid progress bar
-    if (size < 3) {
-        console.warn('Emoji bar size is too small! Returned empty string.')
-        return ''
-    }
-    const availableStyles = ['s', 'm']
-    if (!availableStyles.includes(style)) {
-        console.warn('Emoji bar with invalid style! Returned empty string.')
-        return ''
-    }
-    if (currAt > length) {
-        currAt = 1
-        length = 1
-    }
-
-    // Get bar emojis with style
-    const e = (name) => { return getEmoji(client, name) }
-    let bar = {
-        'l_end': e(style + 'ble'),
-        'r_end': e(style + 'bre'),
-        'at_l': e(style + 'abl'),
-        'at_m': e(style + 'abm'),
-        'at_r': e(style + 'abr'),
-        'empty': e(style + 'be'),
-        'full': e(style + 'bf')
-    }
-
-    // For when the progress is at either ends
-    let currProgress = Math.round((currAt / length) * size)
-    if (currProgress == 0) return bar.at_l + bar.empty.repeat(size - 2) + bar.r_end
-    if (currProgress == size) return bar.l_end + bar.full.repeat(size - 2) + bar.at_r
-
-    // For when the progress is in the middle
-    let progressBar = bar.l_end
-    for (let i = 2; i < size; i++) {
-        if (i < currProgress) progressBar += bar.full
-        else if (i == currProgress) progressBar += bar.at_m
-        else progressBar += bar.empty
-    }
-    progressBar += bar.r_end
-    return progressBar
-}
-
 //-------------------------------------------------
 // Generic util functions
 // ------------------------------------------------
@@ -336,3 +280,14 @@ export function escapePunc(text) {
 export function generateUID(baseString) {
     return `${baseString}_${Date.now()}`
 }
+
+/**
+ * Checks if a string contains only alphabetical characters.
+ * @param {string} str - The string to check.
+ * @returns {boolean} - True if the string is a word (only alphabetical characters), false otherwise.
+ */
+export function isWord(str) {
+    // Regular expression to match only alphabetical characters
+    const regex = /^[A-Za-z]+$/;
+    return regex.test(str);
+  }

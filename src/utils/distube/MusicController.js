@@ -161,7 +161,8 @@ export class MusicController {
                 this._queueIdsCopy = deepCopy(queue.songs.map(song => song.uid))
             }
             else {
-                console.error(`❌ Unknown interaction ID ${interaction.customId} received.`)
+                console.error(`❌ Unknown interaction ID ${actionId} received.`)
+                interaction.deferUpdate()
             }
         }
     }
