@@ -5,13 +5,13 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder} from 'discord.js'
 import { defaultEmbed, getEmoji, escapePunc } from '../general.js'
 import { songInfoEmbed } from './utils.js'
-import { ControlPanel } from './ControlPanel.js'
 import { createCanvas, loadImage } from 'canvas'
+import { MusicControllerPanel } from './MusicControllerPanel.js'
 
 /**
  * A class that represents a control panel for the media player/currently playing song
  */
-export class PlayerPanel extends ControlPanel {
+export class PlayerPanel extends MusicControllerPanel {
     /**
      * Constructs a PlayerPanel instance, which is used to control the currently playing song.
      * @param {Interaction} interaction - The Discord interaction object triggering the panel.
@@ -19,12 +19,10 @@ export class PlayerPanel extends ControlPanel {
      */
     constructor(interaction, client, navButtons, helpEmbed) {
         super(interaction, client, navButtons, helpEmbed)
-
-        this._navButtons = navButtons
     }
 
-    // Function to set up the music player panel. Must be run after creation.
-    async init() {
+    // Set up the media player panel. Must be run after creation.
+    async setup() {
         this._imageAssets = {
             barBg: await loadImage(this.client.assets.playerpanel.get('musicbar.png')),
             mSlider: await loadImage(this.client.assets.playerpanel.get('music_slider.png')),
@@ -34,6 +32,7 @@ export class PlayerPanel extends ControlPanel {
         }
         const queue = await this.client.distube.getQueue(this.interaction.guild.id)
         const musicbar = await this._getMusicBarImage(queue)
+
         this.panelMessage = {
             embeds: this._getEmbeds(this.interaction, queue),
             components: this._getButtons(queue),

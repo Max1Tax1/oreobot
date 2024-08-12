@@ -4,7 +4,7 @@
 
 import { SlashCommandBuilder } from 'discord.js'
 import { notUserPlayable } from '../../utils/distube/utils.js'
-import { SearchResults } from '../../utils/distube/SearchNavigator.js'
+import { SearchNavigator } from '../../utils/distube/SearchNavigator.js'
 
 export const properties = {
     enabled: true,
@@ -37,19 +37,6 @@ export async function execute(interaction, client) {
     if (replyMsg) return await interaction.reply(replyMsg)
 
     // Search for specified string and send results
-    await interaction.deferReply()
-    const searchResults = new SearchResults(interaction, client, mediaName, pluginName)
-    await searchResults.init()
-    const replyMessage = await interaction.followUp(searchResults.panelMessage)
-
-    // Collector for button interactions
-    const collector = await replyMessage.createMessageComponentCollector()
-    collector.on('collect', async (inter) => {
-        const actionId = inter.customId
-        if (searchResults.collectorActions[actionId]) return await searchResults.collectorActions[actionId](inter)
-        else {
-            console.error(`❌ Unknown interaction ID ${actionId} received.`)
-            inter.deferUpdate()
-        }
-    })
+    const searchNav = new SearchNavigator(interaction, client, mediaName, pluginName)
+    await searchNav.init()
 }

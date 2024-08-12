@@ -5,7 +5,7 @@
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import { RepeatMode } from 'distube'
-import { getEmoji, deepCopy } from '../general.js'
+import { getEmoji, deepCopy, getInteractionCollector } from '../general.js'
 import { getQueueHelpEmbed, getPlayerHelpEmbed } from '../help.js'
 import { PlayerPanel } from './PlayerPanel.js'
 import { QueuePanel } from './QueuePanel.js'
@@ -35,9 +35,11 @@ export class MusicController {
     }
 
     // Function to set up music controller. Must be run after creation.
-    async init() {
-            
+    async init() {  
         const returnEmoji = getEmoji(this.client, 'o_return')
+
+        // Defer reply for more time to set up
+        await this.interaction.deferReply()
 
         // Build player panel and help embed
         const playerHelpTailText = `*Press the ${returnEmoji} button to return to music player.*`
@@ -46,7 +48,7 @@ export class MusicController {
             this._getNavButtons(playerPanelNavOptions),
             getPlayerHelpEmbed(this.client, playerPanelNavOptions, playerHelpTailText, true)
         )
-        await this._playerPanel.init()
+        await this._playerPanel.setup()
 
         // Build queue panel and help embed
         const queueHelpTailText = `*Press the ${returnEmoji} button to return to queue panel.*`
@@ -55,7 +57,7 @@ export class MusicController {
             this._getNavButtons(queuePanelNavOptions),
             getQueueHelpEmbed(this.client, queuePanelNavOptions, queueHelpTailText, true)
         )
-        await this._queuePanel.init()
+        await this._queuePanel.setup()
 
         // Set the active display to show on startup
         switch (this._initDisplay) {
@@ -69,7 +71,22 @@ export class MusicController {
                 throw new Error(`Failed MusicController init - Display: "${display}" is invalid!`)
         }
 
+        // Follow up on defer reply, set interaction collector and on exit message
+        const replyMessage = await this.interaction.followUp(this.panel.panelMessage)
+        this._onEnd = this._onEnd.bind(this)
+        this.interactionCollector = await getInteractionCollector(this.interaction, replyMessage,
+            this.collectorFunc, this._onEnd) 
         return this
+    }
+
+    // Panel timeout function
+    async _onEnd() {
+        const embeds = this.panel.panelMessage.embeds 
+        embeds[embeds.length - 1].setFooter({ text: 'Timed out. Retry command to use the controls.' })
+        return await this.interaction.editReply({
+            embeds: embeds,
+            components: [],
+        })
     }
 
     // Functions for panel navigation
@@ -101,10 +118,24 @@ export class MusicController {
             
         // Close the music controller
         close: async (interaction) => {
-            return await interaction.update({
-                content: `This panel has been closed.`,
-                embeds: [], components: [], files: []
-            }).then(setTimeout(() => { interaction.deleteReply() }, 2000))
+            
+            // Dirty code to remove any previous on 'end' event listeners (the timeout one)
+            const endEvents = this.interactionCollector._events.end
+            this.interactionCollector._events.end = [endEvents[0]]
+
+            // Register interaction collector on end function to close panel, with custom message
+            this.interactionCollector.on('end', async () => {
+                await interaction.update({
+                    content: 'This panel has been closed.',
+                    embeds: [], components: [], files: []
+                })
+            })
+
+            // Remove the interaction collector and delete the reply.
+            await this.interactionCollector.stop()
+            setTimeout(async () => {
+                return await interaction.deleteReply()
+            }, 2000)
         }
     }
 

@@ -45,14 +45,6 @@ export async function execute(interaction, client) {
     })
 
     // Create and send the queue embed message
-    await interaction.deferReply()
     const musicController = new MusicController(interaction, client, 'queue')
     await musicController.init()
-    const replyMessage = await interaction.followUp(musicController.panel.panelMessage)
-
-    // Collector for button interactions
-    const collector = await replyMessage.createMessageComponentCollector()
-    collector.on('collect', async (inter) => {
-        musicController.collectorFunc(inter, queue)
-    })
 }

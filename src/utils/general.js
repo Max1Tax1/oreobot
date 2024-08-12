@@ -34,7 +34,7 @@ export function printBotInfo() {
     } catch (error) {
         console.error('❌ An error occurred whilest reading package.json:\n', error)
     }
-    console.log('\x1b[1m\x1b[33m▄▄▄▄▄▄▄▄▄▄▄▄▄                                 ▄▄▄▄▄▄▄▄▄▄▄▄▄')
+    console.log('▄▄▄▄▄▄▄▄▄▄▄▄▄                                 ▄▄▄▄▄▄▄▄▄▄▄▄▄')
     console.log('█░░░░▒▒▒▒▓▓▓▓ ▄█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█▄ ▓▓▓▓▒▒▒▒░░░░█')
     console.log('█░░░░  ▄▄▄▄▄▄▄█ ╔═════════════════════════╗ █▄▄▄▄▄▄▄  ░░░░█')
     console.log('█░░░░           ║     🍪 Oreo bot 🍪      ║           ░░░░█')
@@ -44,8 +44,8 @@ export function printBotInfo() {
     console.log(`█ ${padText(`💡 Version: ${packageJson.version} (${mode} mode)`)}█`)
     console.log(`█ ${padText(`📅 Started on: ${currDate}`)}█`)
     console.log(`█ ${padText(`🕒 Time at: ${currTime}`)}█`)
-    console.log(`█ ${padText(`🖊️  Written by ${packageJson.author}`)}  █`)
-    console.log('█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█\x1b[0m\n')
+    console.log(`█ ${padText(`📝 Written by ${packageJson.author}`)}█`)
+    console.log('█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█')
 }
 
 /**
@@ -154,6 +154,32 @@ export function embedLS(breakBefore = true, breakAfter = true) {
 export function getEmoji(client, name, animated=false) {
     const emoji = client.emojiList.find(e => e.name === name)
     return animated ? `a<:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`
+}
+
+/**
+ * Creates a message component collector for the specified reply message.
+ * 
+ * @param {Interaction} interaction - The interaction object related to this message.
+ * @param {Message} replyMessage - The result of an await interaction.reply-like.
+ * @param {Function} onCollect - Function to run on interaction collect.
+ * @param {Function} onEnd - (Optional) Function to run on interaction timeout.
+ * Takes "interaction" as its only argument. Default function edits the message embed/content.
+ * @param {number} time - (Optional) Duration in milliseconds for interaction timeout.
+ * Default defined in config.js.
+ * @returns {MessageComponentCollector} The message component collector that handles
+ * interactions for the provided message.
+ */
+export function getInteractionCollector(interaction, replyMessage, onCollect, onEnd,
+    time = config.interactionTimeout) {
+    const collector = replyMessage.createMessageComponentCollector({ time: time })
+    collector.on('collect', async (inter) => {
+        collector.resetTimer()
+        return await onCollect(inter)
+    })
+    collector.on('end', async () => {
+        return await onEnd()
+    })
+    return collector
 }
 
 //-------------------------------------------------

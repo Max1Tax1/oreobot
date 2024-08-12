@@ -3,23 +3,26 @@
  */
 
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
-import { defaultEmbed, embedLS, getEmoji, escapePunc, generateUID, abbrText } from '../general.js'
+import { defaultEmbed, embedLS, getEmoji, escapePunc, abbrText } from '../general.js'
 import { songInfoEmbed, playMedia } from './utils.js'
-import * as config from '../../config.js'
 import { getSearchHelpEmbed } from '../help.js'
+import { InteractionPanel } from '../InteractionPanel.js'
+import * as config from '../../config.js'
 
 /**
  * A class that displays and controls search results
  */
-export class SearchResults {
+export class SearchNavigator extends InteractionPanel {
     /**
-     * Constructs a SearchResults instance, which is used to select search results.
+     * Constructs a SearchNavigator instance, which is used to select search results.
      * @param {Interaction} interaction - The Discord interaction calling the search.
      * @param {Discord.Client} client - The Discord client instance.
+     * @param {string} mediaName - The search string that the user requested.
+     * @param {string} pluginName - The plugin/source name (what service to perform the search on).
      */
     constructor(interaction, client, mediaName, pluginName) {
-        this.interaction = interaction
-        this.client = client
+        super(interaction, client, true)
+
         this.mediaName = mediaName
         this.pluginName = pluginName
         this._currSelection = 0
@@ -34,7 +37,7 @@ export class SearchResults {
     }
 
     // Function to set up search results. Must be run after creation.
-    async init() {
+    async setup() {
 
         // Search song with specified plugin
         const plugin = this.client.distube.extractorPlugins[this.pluginName]
@@ -59,6 +62,24 @@ export class SearchResults {
             embeds: [this._getEmbed(this.interaction)],
             components: this._getButtons(),
         }
+
+        // Set up for interaction collector
+        await super.setup()
+    }
+
+    // Use default interaction collection function
+    async onCollect(interaction) {
+        return super.onCollect(interaction)
+    }
+
+    // Function to run after timeout/interaction collector stop
+    async onEnd() {
+        const embed = this._getEmbed(this.interaction)
+        embed.setFooter({ text: 'This search has timed out. Use /search to search again.'})
+        this.interaction.editReply({
+            embeds: [embed],
+            components: [],
+        })
     }
 
     // Actions for interactions with control buttons
@@ -138,10 +159,7 @@ export class SearchResults {
 
         // Closes this interaction
         close: async (interaction) => {
-            return await interaction.update({
-                content: `This panel has been closed.`,
-                embeds: [], components: [], files: []
-            }).then(setTimeout(() => { interaction.deleteReply() }, 2000))
+            return await this.closePanel(interaction)
         }
     }
 
@@ -205,7 +223,7 @@ export class SearchResults {
     }
 
     // Function to update the queue panel with the latest info
-    async updatePanel(interaction, display) {
+    async updatePanel(interaction) {
         this.panelMessage = {
             embeds: [this._getEmbed(interaction)],
             components: this._getButtons(),

@@ -5,13 +5,13 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import { defaultEmbed, embedLS, getEmoji, escapePunc, generateUID } from '../general.js'
 import { songInfoEmbed } from './utils.js'
-import { ControlPanel } from './ControlPanel.js'
+import { MusicControllerPanel } from './MusicControllerPanel.js'
 import * as config from '../../config.js'
 
 /**
  * A class that represents a control panel for the media player's queue
  */
-export class QueuePanel extends ControlPanel {
+export class QueuePanel extends MusicControllerPanel {
     /**
      * Constructs a QueuePanel instance, which is used to control the media queue for DisTube.
      * @param {Interaction} interaction - The Discord interaction object triggering the panel.
@@ -19,12 +19,15 @@ export class QueuePanel extends ControlPanel {
      */
     constructor(interaction, client, navButtons, helpEmbed) {
         super(interaction, client, navButtons, helpEmbed)
-
-        const queue = client.distube.getQueue(interaction.guild.id)
         this._currSelection = 0
         this._queueList = []
+    }
+
+    // Set up the queue panel. Must be run after creation.
+    async setup() {
+        const queue = await this.client.distube.getQueue(this.interaction.guild.id)
         this.panelMessage = {
-            embeds: [this._getEmbed(interaction, queue)],
+            embeds: [this._getEmbed(this.interaction, queue)],
             components: this._getButtons(queue),
             files: []
         }

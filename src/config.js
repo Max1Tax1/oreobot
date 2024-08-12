@@ -3,13 +3,11 @@
  * Config file for Oreo
  */
 import ffmpegPath from 'ffmpeg-static'
-import { YouTubePlugin } from '@distube/youtube'
-import { SoundCloudPlugin } from '@distube/soundcloud'
-import { SpotifyPlugin } from '@distube/spotify'
 
 export const testMode = true
 export const embedColour = 'F9F6EE'
 export const embedSeparator = '━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+export const interactionTimeout = '90000'
 
 export const assetFolders = [
     'entertainment',
