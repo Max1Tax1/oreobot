@@ -25,7 +25,6 @@ export default async function handleDistube(client) {
             plugins: Object.values(extractorPlugins),
         })
         distube.setMaxListeners(config.musicPlayer.maxListeners)
-        process.env.YTSR_NO_UPDATE = '1'
         client.distube = distube
         client.distube.extractorPlugins = extractorPlugins
         client.distube.silentMode = config.musicPlayer.allowNotif ? false : true

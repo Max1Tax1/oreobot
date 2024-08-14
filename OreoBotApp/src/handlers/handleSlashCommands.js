@@ -2,9 +2,7 @@
  * Handler for registering commands
  */
 
-import { Collection } from 'discord.js'
-import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v9'
+import { Collection, Routes, REST } from 'discord.js'
 import { readdirSync } from 'fs'
 import { buildHelpPages } from '../utils/help.js'
 import * as secrets from '../secrets.js'
