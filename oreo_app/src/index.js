@@ -7,7 +7,6 @@ import { basename } from 'path'
 import { readdirSync } from 'fs'
 import { getDir, printBotInfo } from './utils/general.js'
 import * as secrets from './secrets.js'
-import * as config from './config.js'
 
 //-------------------------------------------------
 // Bot client initialization and setup

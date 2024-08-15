@@ -28,76 +28,76 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorDialogueForm));
-            this.BtnErrorOk = new System.Windows.Forms.Button();
-            this.ImgError = new System.Windows.Forms.PictureBox();
-            this.TxtError = new System.Windows.Forms.RichTextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.ImgError)).BeginInit();
-            this.SuspendLayout();
+            BtnErrorOk = new Button();
+            ImgError = new PictureBox();
+            TxtError = new RichTextBox();
+            ((System.ComponentModel.ISupportInitialize)ImgError).BeginInit();
+            SuspendLayout();
             // 
             // BtnErrorOk
             // 
-            this.BtnErrorOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnErrorOk.Location = new System.Drawing.Point(314, 103);
-            this.BtnErrorOk.MaximumSize = new System.Drawing.Size(100, 34);
-            this.BtnErrorOk.MinimumSize = new System.Drawing.Size(100, 34);
-            this.BtnErrorOk.Name = "BtnErrorOk";
-            this.BtnErrorOk.Size = new System.Drawing.Size(100, 34);
-            this.BtnErrorOk.TabIndex = 1;
-            this.BtnErrorOk.Text = "Ok";
-            this.BtnErrorOk.UseVisualStyleBackColor = true;
-            this.BtnErrorOk.Click += new System.EventHandler(this.BtnErrorOk_Click);
+            BtnErrorOk.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            BtnErrorOk.Location = new Point(316, 103);
+            BtnErrorOk.MaximumSize = new Size(100, 34);
+            BtnErrorOk.MinimumSize = new Size(100, 34);
+            BtnErrorOk.Name = "BtnErrorOk";
+            BtnErrorOk.Size = new Size(100, 34);
+            BtnErrorOk.TabIndex = 1;
+            BtnErrorOk.Text = "Ok";
+            BtnErrorOk.UseVisualStyleBackColor = true;
+            BtnErrorOk.Click += BtnErrorOk_Click;
             // 
             // ImgError
             // 
-            this.ImgError.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ImgError.Image = ((System.Drawing.Image)(resources.GetObject("ImgError.Image")));
-            this.ImgError.Location = new System.Drawing.Point(6, 26);
-            this.ImgError.MaximumSize = new System.Drawing.Size(60, 60);
-            this.ImgError.MinimumSize = new System.Drawing.Size(60, 60);
-            this.ImgError.Name = "ImgError";
-            this.ImgError.Size = new System.Drawing.Size(60, 60);
-            this.ImgError.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImgError.TabIndex = 2;
-            this.ImgError.TabStop = false;
+            ImgError.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ImgError.ErrorImage = null;
+            ImgError.Image = OreoManager.Properties.Resources.error;
+            ImgError.InitialImage = null;
+            ImgError.Location = new Point(6, 26);
+            ImgError.MaximumSize = new Size(60, 60);
+            ImgError.MinimumSize = new Size(60, 60);
+            ImgError.Name = "ImgError";
+            ImgError.Size = new Size(60, 60);
+            ImgError.SizeMode = PictureBoxSizeMode.StretchImage;
+            ImgError.TabIndex = 2;
+            ImgError.TabStop = false;
             // 
             // TxtError
             // 
-            this.TxtError.BackColor = System.Drawing.SystemColors.Menu;
-            this.TxtError.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TxtError.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.TxtError.Enabled = false;
-            this.TxtError.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TxtError.Location = new System.Drawing.Point(72, 45);
-            this.TxtError.MaximumSize = new System.Drawing.Size(342, 41);
-            this.TxtError.MaxLength = 40;
-            this.TxtError.MinimumSize = new System.Drawing.Size(342, 41);
-            this.TxtError.Multiline = false;
-            this.TxtError.Name = "TxtError";
-            this.TxtError.ReadOnly = true;
-            this.TxtError.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.TxtError.Size = new System.Drawing.Size(342, 41);
-            this.TxtError.TabIndex = 3;
-            this.TxtError.Text = "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO";
+            TxtError.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TxtError.BackColor = SystemColors.Menu;
+            TxtError.BorderStyle = BorderStyle.None;
+            TxtError.Enabled = false;
+            TxtError.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            TxtError.Location = new Point(72, 45);
+            TxtError.MaximumSize = new Size(342, 41);
+            TxtError.MaxLength = 40;
+            TxtError.MinimumSize = new Size(342, 41);
+            TxtError.Multiline = false;
+            TxtError.Name = "TxtError";
+            TxtError.ReadOnly = true;
+            TxtError.ScrollBars = RichTextBoxScrollBars.None;
+            TxtError.Size = new Size(342, 41);
+            TxtError.TabIndex = 3;
+            TxtError.Text = "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO";
             // 
             // ErrorDialogueForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(422, 143);
-            this.ControlBox = false;
-            this.Controls.Add(this.TxtError);
-            this.Controls.Add(this.ImgError);
-            this.Controls.Add(this.BtnErrorOk);
-            this.MaximumSize = new System.Drawing.Size(440, 190);
-            this.MinimumSize = new System.Drawing.Size(440, 190);
-            this.Name = "ErrorDialogueForm";
-            this.Padding = new System.Windows.Forms.Padding(3);
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Fatal Error";
-            ((System.ComponentModel.ISupportInitialize)(this.ImgError)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(120F, 120F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            ClientSize = new Size(422, 143);
+            ControlBox = false;
+            Controls.Add(TxtError);
+            Controls.Add(ImgError);
+            Controls.Add(BtnErrorOk);
+            MaximumSize = new Size(440, 190);
+            MinimumSize = new Size(440, 190);
+            Name = "ErrorDialogueForm";
+            Padding = new Padding(3);
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Fatal Error";
+            ((System.ComponentModel.ISupportInitialize)ImgError).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

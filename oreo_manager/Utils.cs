@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace OreobotManager
+﻿namespace OreobotManager
 {
     public static class Utils
     {
@@ -18,7 +14,7 @@ namespace OreobotManager
                 {
                     
                     // Simple text box, just append text
-                    if (control is System.Windows.Forms.TextBox textBox)
+                    if (control is TextBox textBox)
                     {
                         textBox.AppendText(text + Environment.NewLine);
                     }

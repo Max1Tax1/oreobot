@@ -1,50 +1,52 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using System.Windows.Forms;
 using static OreobotManager.Utils;
-
 
 namespace OreobotManager
 {
     public partial class MainForm : Form
     {
-        private Process botProcess;
-        private Timer sessionTimer;
-        private DateTime sessionStartTime;
+        private Process? botProcess;
+        private System.Windows.Forms.Timer? sessionTimer;
+        private DateTime? sessionStartTime;
+        private readonly JsonDocument packageJson;
         private readonly string runScript;
         private readonly string setupScript;
         private readonly Boolean installed;
-        private readonly JsonDocument packageJson;
-        
 
         public MainForm()
         {
-            // Get all relevant info
-            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
-            runScript = Path.Combine(projectDirectory, "../scripts/run.bat");
-            setupScript = Path.Combine(projectDirectory, "../scripts/setup.bat");
-            installed = Directory.Exists(Path.Combine(projectDirectory, "../oreo_app/node_modules"));
+            // Get Base directory
+            string? appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            while (appDirectory != null && !Directory.Exists(Path.Combine(appDirectory, "oreo_manager")))
+            {
+                appDirectory = Directory.GetParent(appDirectory)?.FullName;
+            }
+            appDirectory = appDirectory != null ? Path.Combine(appDirectory, "oreo_manager") : string.Empty;
+            if (appDirectory == string.Empty) ShowErrorDialogue("App not in correct directory!");
 
+            // Get all relevant info
+            if (appDirectory == string.Empty) ShowErrorDialogue("Error getting current directory!");
+            runScript = Path.Combine(appDirectory, "../scripts/run.bat");
+            setupScript = Path.Combine(appDirectory, "../scripts/setup.bat");
+            installed = Directory.Exists(Path.Combine(appDirectory, "../oreo_app/node_modules"));
 
             // Setup components
             InitializeComponent();
             BtnSetup.Text = installed ? "Update" : "Install";
 
             // Load in package.json and write info
-            string packageJsonPath = Path.Combine(projectDirectory, "../oreo_app/package.json");
+            string packageJsonPath = Path.Combine(appDirectory, "../oreo_app/package.json");
+            
             if (File.Exists(packageJsonPath))
             {
                 string jsonContent = File.ReadAllText(packageJsonPath);
                 packageJson = JsonDocument.Parse(jsonContent);
                 InitializeInfoBoxes();
             }
-            else
-            {
-                ShowErrorDialogue("Could not load in package.json!");
-            }
+            else ShowErrorDialogue("Could not load in package.json!");
+            packageJson = packageJson ?? throw new ArgumentNullException(nameof(packageJson));
         }
 
         private void InitializeInfoBoxes()
@@ -87,7 +89,7 @@ namespace OreobotManager
                     {
                         if (dependency.Name.StartsWith("@distube/"))
                         {
-                            string depName = dependency.Name.Substring("@distube/".Length);
+                            string depName = dependency.Name["@distube/".Length..];
                             AppendText(TxtSupportedInfo, $" - {depName}\n");
                         }
                     }
@@ -98,7 +100,12 @@ namespace OreobotManager
         private void SessionTimerUpdate()
         {
             // Get time elapsed
-            TimeSpan elapsed = DateTime.Now - sessionStartTime;
+            if (sessionStartTime == null)
+            {
+                ShowErrorDialogue("Session start time was not registered!");
+                return;
+            }
+            TimeSpan elapsed = DateTime.Now - (DateTime)sessionStartTime;
             double totalSeconds = elapsed.TotalSeconds;
 
             // Get the index of the first character of the last line
@@ -116,7 +123,7 @@ namespace OreobotManager
             if (running) {
 
                 // Start timer
-                sessionTimer = new Timer() { Interval = 5000 };
+                sessionTimer = new System.Windows.Forms.Timer() { Interval = 5000 };
                 sessionTimer.Tick += (sender, e) => SessionTimerUpdate();
                 sessionTimer.Start();
                 sessionStartTime = DateTime.Now;
@@ -133,6 +140,11 @@ namespace OreobotManager
             else
             {
                 // Stop timer
+                if (sessionTimer == null)
+                {
+                    ShowErrorDialogue("Session timer invalid!");
+                    return;
+                }
                 sessionTimer.Stop();
                 sessionTimer.Dispose();
 
@@ -149,9 +161,9 @@ namespace OreobotManager
             }
         }
 
-        private void ShowErrorDialogue(string message)
+        private static void ShowErrorDialogue(string message)
         {
-            ErrorDialogueForm errorDialog = new ErrorDialogueForm(message);
+            ErrorDialogueForm errorDialog = new (message);
             errorDialog.ShowDialog();
         }
 
@@ -231,7 +243,7 @@ namespace OreobotManager
             TxtLogs.Clear();
             TxtLogs.Focus();
 
-            Process setupProcess = new Process
+            Process setupProcess = new ()
             {
                 StartInfo = new ProcessStartInfo
                 {

@@ -29,16 +29,23 @@ export function printBotInfo() {
         console.error('❌ An error occurred whilest reading package.json:\n', error)
     }
 
-    console.log('_____________________________________')
-    console.log('_____________________________________')
-    console.log('_____________________________________')
+    // Function to pad text for output
+    function padText(text) {
+        const totalLength = 30
+        const paddingLength = totalLength - text.length
+        return text + ' '.repeat(paddingLength)
+    }
 
-    // // function to pad text for output
-    // function padText(text) {
-    //     const totalLength = 56
-    //     const paddingLength = totalLength - text.length
-    //     return text + ' '.repeat(paddingLength)
-    // }
+    console.log('#################################')
+    console.log('#####          Oreo         #####')
+    console.log('#################################')
+    console.log(`# ${padText(`Version: ${packageJson.version} (${mode} mode)`)}#`)
+    console.log(`# ${padText(`Started on: ${currDate}`)}#`)
+    console.log(`# ${padText(`Time at: ${currTime}`)}#`)
+    console.log(`# ${padText(`Written by ${packageJson.author}`)}#`)
+    console.log('#################################\n')
+
+    // NOTE: Uncomment when formatting is good on .Net
     // console.log('▄▄▄▄▄▄▄▄▄▄▄▄▄                                 ▄▄▄▄▄▄▄▄▄▄▄▄▄')
     // console.log('█░░░░▒▒▒▒▓▓▓▓ ▄█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█▄ ▓▓▓▓▒▒▒▒░░░░█')
     // console.log('█░░░░  ▄▄▄▄▄▄▄█ ╔═════════════════════════╗ █▄▄▄▄▄▄▄  ░░░░█')

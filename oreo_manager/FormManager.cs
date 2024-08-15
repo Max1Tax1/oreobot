@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-
-public static class FormManager
+﻿namespace OreoManager
 {
-    public static void CloseAllForms()
+    public static class FormManager
     {
-
-        // Create a list of all the open forms
-        List<Form> formsToClose = new List<Form>();
-        foreach (Form form in Application.OpenForms)
+        public static void CloseAllForms()
         {
-            formsToClose.Add(form);
+
+            // List down and close all forms
+            List<Form> formsToClose = Application.OpenForms.Cast<Form>().ToList();
+            formsToClose.ForEach(form => form.Close());
+
+            Environment.Exit(0);
         }
 
-        // Close each form from the list
-        foreach (Form form in formsToClose)
-        {
-            form.Close();
-        }
-
-        Environment.Exit(0);
     }
-
 }

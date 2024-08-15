@@ -1,0 +1,17 @@
+C:\Users\xmzhe\Desktop\oreobot\ReleaseOutput\net8.0-windows\win-x64\OreoManager.exe
+C:\Users\xmzhe\Desktop\oreobot\ReleaseOutput\net8.0-windows\win-x64\OreoManager.deps.json
+C:\Users\xmzhe\Desktop\oreobot\ReleaseOutput\net8.0-windows\win-x64\OreoManager.runtimeconfig.json
+C:\Users\xmzhe\Desktop\oreobot\ReleaseOutput\net8.0-windows\win-x64\OreoManager.dll
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreobotManager.ErrorDialogueForm.resources
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreobotManager.MainForm.resources
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.Properties.Resources.resources
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.csproj.GenerateResource.cache
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.AssemblyInfoInputs.cache
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.AssemblyInfo.cs
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.csproj.CoreCompileInputs.cache
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoMana.7C7FEB3B.Up2Date
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.dll
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\refint\OreoManager.dll
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\OreoManager.genruntimeconfig.cache
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\obj\Release\net8.0-windows\win-x64\ref\OreoManager.dll

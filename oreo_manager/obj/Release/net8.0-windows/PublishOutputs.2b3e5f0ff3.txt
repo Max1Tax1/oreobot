@@ -1,0 +1,5 @@
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\UsersxmzheDesktoporeobot\OreoManager.exe
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\UsersxmzheDesktoporeobot\OreoManager.dll
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\UsersxmzheDesktoporeobot\OreoManager.deps.json
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\UsersxmzheDesktoporeobot\OreoManager.runtimeconfig.json
+C:\Users\xmzhe\Desktop\oreobot\oreo_manager\UsersxmzheDesktoporeobot\OreoManager.pdb
