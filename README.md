@@ -1,6 +1,6 @@
 # Oreo
 
-Oreo is a Discord bot developed using Discord.js, with a .NET WinForms manager designed to monitor and manage the bot's operations. This README provides an overview of the project, setup instructions, and usage details.
+A fun, exploratory project aimed at learning and experimenting with Discord.js. It includes a .NET WinForms manager for monitoring and managing the bot’s operations. This README provides an overview of the project, setup instructions, and usage details for anyone interested in it. This project may contain some unfound bugs :P
 
 ---
 
